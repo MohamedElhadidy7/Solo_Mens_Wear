@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
-class SplashViewBody extends StatelessWidget {
+class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
+
+  @override
+  State<SplashViewBody> createState() => _SplashViewBodyState();
+}
+
+class _SplashViewBodyState extends State<SplashViewBody> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 5), () {
+      GoRouter.of(context).push('/onboarding');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +47,8 @@ class SplashViewBody extends StatelessWidget {
                 ],
                 child: Text(
                   char,
-                  style: const TextStyle(
-                    fontSize: 70,
+                  style: TextStyle(
+                    fontSize: 70.sp,
                     fontWeight: FontWeight.bold,
                   ).copyWith(color: charColor),
                 ),

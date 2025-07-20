@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:solo/Features/Splash/Presentation/View/Splash_View.dart';
+import 'package:solo/Features/onboarding/presentation/view/onboarding_view.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -9,6 +10,12 @@ abstract class AppRouter {
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
           return const SplashView();
+        },
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (BuildContext context, GoRouterState state) {
+          return const OnboardingView();
         },
       ),
     ],
