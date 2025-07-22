@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Features/onboarding/data/Models/onboardingModel.dart';
 
 class OnboardingViewBody extends StatefulWidget {
@@ -55,15 +57,10 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               bottom: 200.h,
               left: 50.w,
               right: 50.w,
-
               child: Text(
                 textAlign: TextAlign.center,
                 page.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppStyles.textstyle30.copyWith(color: Colors.white),
               ),
             ),
 
@@ -71,15 +68,10 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               bottom: 150.h,
               left: 50.w,
               right: 50.w,
-
               child: Text(
                 maxLines: 2,
                 page.description,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: AppStyles.textstyle16.copyWith(color: Colors.white),
               ),
             ),
 
@@ -103,12 +95,13 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                 top: 25.h,
                 right: 16.w,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    GoRouter.of(context).push('/login');
+                  },
                   child: Text(
                     'Skip',
-                    style: TextStyle(
+                    style: AppStyles.textstyle16.copyWith(
                       color: Color(0xff222222),
-                      fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -119,13 +112,13 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     bottom: 25.h,
                     right: 16.w,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).push('/login');
+                      },
                       child: Text(
                         'Get Statrted',
-                        style: TextStyle(
+                        style: AppStyles.textstyle20.copyWith(
                           color: Colors.white,
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
