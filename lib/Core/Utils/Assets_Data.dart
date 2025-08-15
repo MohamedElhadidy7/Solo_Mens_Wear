@@ -4,4 +4,5 @@ class AssetsData {
   static const onboarding3 = 'assets/images/on3.jpg';
   static const google = 'assets/images/google.png';
   static const facebook = 'assets/images/facebook.png';
+  static const logo = 'assets/images/logo.png';
 }

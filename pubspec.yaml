@@ -28,19 +28,33 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_dialog: ^3.2.1
   cupertino_icons: ^1.0.8
+  dartz: ^0.10.1
+  dio: ^5.8.0+1
   flutter:
     sdk: flutter
-  flutter_animate: null
+  flutter_animate: ^4.5.0
+  flutter_bloc: ^9.1.1
+  flutter_progress_hud: ^2.0.2
   flutter_screenutil: ^5.9.3
   go_router: null
-  pin_code_fields:
+  google_fonts: ^6.2.1
+  pin_code_fields: null
   smooth_page_indicator: ^1.2.1
+  flutter_easyloading: ^3.0.5
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
+  flutter_launcher_icons: null
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -68,7 +82,7 @@ flutter:
   fonts:
     - family: Rubik
       fonts:
-        - asset: assets/Fonts/Rubik-Regular.ttf
+        - asset: assets/fonts/Rubik-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
