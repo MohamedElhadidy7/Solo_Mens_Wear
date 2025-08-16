@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:solo/Features/Auth/data/Models/Forget_Password_Model/ForgetPassword_Model.dart';
 import 'package:solo/Features/Auth/data/Models/Login_Models/LoginModel.dart';
+import 'package:solo/Features/Auth/data/Models/OTP_Model/OTP_Model.dart';
 
 import 'package:solo/Features/Auth/data/Models/Register_Model/Register_Model.dart';
 
@@ -18,4 +19,8 @@ abstract class AuthRepos {
   });
 
   Future<ForgetpasswordModel> ForgetPasswordService({required String email});
+  Future<OTPModel> VerifyOtpservice({
+    required String Email,
+    required String Otp,
+  });
 }

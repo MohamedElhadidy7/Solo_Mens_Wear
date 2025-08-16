@@ -25,4 +25,22 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
       emit(ResetPasswordFaliure(errmessage: errorMessage));
     }
   }
+
+  Future<void> UserVerifyOtp({
+    required String Email,
+    required String Otp,
+  }) async {
+    emit(ResetPasswordloading());
+    try {
+      final otpmodel = await authRepos.VerifyOtpservice(Email: Email, Otp: Otp);
+      emit(ResetPasswordSucsess(message: otpmodel.message));
+    } catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.substring(11);
+      }
+
+      emit(ResetPasswordFaliure(errmessage: errorMessage));
+    }
+  }
 }
