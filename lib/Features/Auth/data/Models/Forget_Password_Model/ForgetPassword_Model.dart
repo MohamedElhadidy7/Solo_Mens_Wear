@@ -11,7 +11,7 @@ class ForgetpasswordModel {
   factory ForgetpasswordModel.fromjson(Map<String, dynamic> json) {
     return ForgetpasswordModel(
       status: json['status'],
-      message: json['message'],
+      message: json['message'] ?? '',
       isSuccess: json['isSuccess'],
     );
   }
