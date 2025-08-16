@@ -1,14 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:solo/Constants.dart';
+import 'package:solo/Core/Utils/Api_Service.dart';
 import 'package:solo/Core/Utils/App_Router.dart';
 import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Core/Widgets/Custom_Button.dart';
 import 'package:solo/Core/Widgets/Custom_TextFormField.dart';
+import 'package:solo/Features/Auth/data/repos/Auth_repos_implementation.dart';
 import 'package:solo/Features/Auth/presentation/Manger/Login_Cubit/login_cubit.dart';
+import 'package:solo/Features/Auth/presentation/Manger/Reset_Password_Cubit/reset_password_cubit.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/ForgetPasswprdSheet.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/Validation_Helper.dart';
 
@@ -81,7 +85,14 @@ class _LoginsectionState extends State<Loginsection> {
                         ),
                       ),
                       context: context,
-                      builder: (context) => const ForgetPasswordSheet(),
+                      builder: (context) {
+                        return BlocProvider(
+                          create: (context) => ResetPasswordCubit(
+                            AuthReposImpl(apiservice: Apiservice(Dio())),
+                          ),
+                          child: const ForgetPasswordSheet(),
+                        );
+                      },
                     );
                   },
                   child: Text(

@@ -14,22 +14,19 @@ class LoginCubit extends Cubit<LoginState> {
   }) async {
     emit(Loginloading());
     try {
-      final LoginModel = await authRepos.LoginService(
+      final loginmodel = await authRepos.LoginService(
         Email: Email,
         Password: Password,
       );
-      final accessToken = LoginModel.response['accessToken']['Token'];
-      final refreshToken = LoginModel.response['refreshToken']['token'];
+      final accessToken = loginmodel.response['accessToken']?['Token'];
+      final refreshToken = loginmodel.response['refreshToken']?['token'];
 
       if (accessToken != null && refreshToken != null) {
         await _tokenStorage.saveTokens(accessToken, refreshToken);
       }
-      emit(Loginsucsess(LoginModel.message));
+      emit(Loginsucsess(loginmodel.message));
     } catch (e) {
       String errorMessage = e.toString();
-      if (errorMessage.startsWith('Exception: ')) {
-        errorMessage = errorMessage.substring(11);
-      }
 
       emit(LoginFaliure(errorMessage));
     }
