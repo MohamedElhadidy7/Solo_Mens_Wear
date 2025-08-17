@@ -85,16 +85,12 @@ class _LoginsectionState extends State<Loginsection> {
                         ),
                       ),
                       context: context,
-                      builder: (context) {
-                        return BlocProvider(
-                          create: (context) => ResetPasswordCubit(
-                            AuthReposImpl(apiservice: Apiservice(Dio())),
-                          ),
-                          child: const ForgetPasswordSheet(),
-                        );
+                      builder: (_) {
+                        return const ForgetPasswordSheet();
                       },
                     );
                   },
+
                   child: Text(
                     'Forget Password?',
                     style: AppStyles.textstyle14.copyWith(color: primarycolor),

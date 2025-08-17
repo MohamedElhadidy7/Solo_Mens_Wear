@@ -85,7 +85,7 @@ class AuthReposImpl implements AuthRepos {
   }) async {
     try {
       final response = await apiservice.post(
-        endpoint: 'pi/Account/VerifyOtp',
+        endpoint: 'api/Account/VerifyOtp',
         data: {'Email': Email, 'Otp': Otp},
       );
       final otpmodel = OTPModel.fromjson(response);

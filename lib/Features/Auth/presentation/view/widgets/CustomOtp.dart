@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:solo/Constants.dart';
 
-class Customotp extends StatelessWidget {
-  const Customotp({super.key, this.otpcontroller});
-  final TextEditingController? otpcontroller;
+class CustomOtp extends StatelessWidget {
+  final TextEditingController otpController;
+  final ValueChanged<String>? onCompleted;
+
+  const CustomOtp({super.key, required this.otpController, this.onCompleted});
+
   @override
   Widget build(BuildContext context) {
     return PinCodeTextField(
       autoFocus: true,
-      controller: otpcontroller,
+      controller: otpController,
       appContext: context,
-      length: 4, // Number of OTP digits
+      length: 4, // عدد خانات OTP
       keyboardType: TextInputType.number,
       animationType: AnimationType.fade,
       pinTheme: PinTheme(
@@ -24,11 +27,13 @@ class Customotp extends StatelessWidget {
         selectedColor: primarycolor,
       ),
       cursorColor: primarycolor,
-      animationDuration: Duration(milliseconds: 300),
-      onChanged: (value) => print("Current OTP: $value"),
+      animationDuration: const Duration(milliseconds: 300),
+      onChanged: (value) {},
       onCompleted: (value) {
-        print("OTP Entered: $value");
         FocusScope.of(context).unfocus();
+        if (onCompleted != null) {
+          onCompleted!(value);
+        }
       },
     );
   }

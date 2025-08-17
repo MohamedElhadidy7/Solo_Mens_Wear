@@ -7,13 +7,26 @@ part 'reset_password_state.dart';
 
 class ResetPasswordCubit extends Cubit<ResetPasswordState> {
   ResetPasswordCubit(this.authRepos) : super(ResetPasswordInitial());
+
   final AuthRepos authRepos;
 
-  Future<void> UserForgetPassword({required String email}) async {
+  String? _email;
+  String? get email => _email;
+
+  void setEmail(String email) {
+    _email = email;
+  }
+
+  Future<void> userForgetPassword() async {
+    if (_email == null) {
+      emit(ResetPasswordFaliure(errmessage: "Email is required"));
+      return;
+    }
+
     emit(ResetPasswordloading());
     try {
       final forgetpasswordmodel = await authRepos.ForgetPasswordService(
-        email: email,
+        email: _email!,
       );
       emit(ResetPasswordSucsess(message: forgetpasswordmodel.message));
     } catch (e) {
@@ -26,13 +39,21 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     }
   }
 
-  Future<void> UserVerifyOtp({
-    required String Email,
-    required String Otp,
-  }) async {
+  Future<void> userVerifyOtp({required String otp}) async {
+    if (_email == null) {
+      emit(
+        ResetPasswordFaliure(errmessage: "Email not found, please try again"),
+      );
+      return;
+    }
+
     emit(ResetPasswordloading());
     try {
-      final otpmodel = await authRepos.VerifyOtpservice(Email: Email, Otp: Otp);
+      final otpmodel = await authRepos.VerifyOtpservice(
+        Email: _email!,
+        Otp: otp,
+      );
+
       emit(ResetPasswordSucsess(message: otpmodel.message));
     } catch (e) {
       String errorMessage = e.toString();

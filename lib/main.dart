@@ -1,8 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:solo/Core/Utils/Api_Service.dart';
 import 'package:solo/Core/Utils/App_Router.dart';
+import 'package:solo/Features/Auth/data/repos/Auth_repos_implementation.dart';
+import 'package:solo/Features/Auth/presentation/Manger/Reset_Password_Cubit/reset_password_cubit.dart';
 
 void main() {
   Animate.restartOnHotReload = true;
@@ -22,11 +27,20 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp.router(
-          theme: ThemeData(fontFamily: 'Rubik'),
-          debugShowCheckedModeBanner: false,
-          routerConfig: AppRouter.router,
-          builder: EasyLoading.init(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ResetPasswordCubit(
+                AuthReposImpl(apiservice: Apiservice(Dio())),
+              ),
+            ),
+          ],
+          child: MaterialApp.router(
+            theme: ThemeData(fontFamily: 'Rubik'),
+            debugShowCheckedModeBanner: false,
+            routerConfig: AppRouter.router,
+            builder: EasyLoading.init(),
+          ),
         );
       },
     );
