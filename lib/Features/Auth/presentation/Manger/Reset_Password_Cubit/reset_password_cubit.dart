@@ -18,7 +18,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
   }
 
   Future<void> userForgetPassword() async {
-    if (_email == null) {
+    if (_email == null || _email!.isEmpty) {
       emit(ResetPasswordFaliure(errmessage: "Email is required"));
       return;
     }
@@ -30,19 +30,25 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
       );
       emit(ResetPasswordSucsess(message: forgetpasswordmodel.message));
     } catch (e) {
-      String errorMessage = e.toString();
-      if (errorMessage.startsWith('Exception: ')) {
-        errorMessage = errorMessage.substring(11);
-      }
-
-      emit(ResetPasswordFaliure(errmessage: errorMessage));
+      emit(
+        ResetPasswordFaliure(
+          errmessage: "Failed to send verification code. Please try again.",
+        ),
+      );
     }
   }
 
   Future<void> userVerifyOtp({required String otp}) async {
-    if (_email == null) {
+    if (_email == null || _email!.isEmpty) {
       emit(
         ResetPasswordFaliure(errmessage: "Email not found, please try again"),
+      );
+      return;
+    }
+
+    if (otp.isEmpty || otp.length != 4) {
+      emit(
+        ResetPasswordFaliure(errmessage: "Please enter a valid 4-digit code"),
       );
       return;
     }
@@ -53,12 +59,52 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         Email: _email!,
         Otp: otp,
       );
-
       emit(ResetPasswordSucsess(message: otpmodel.message));
     } catch (e) {
-      String errorMessage = e.toString();
-      if (errorMessage.startsWith('Exception: ')) {
-        errorMessage = errorMessage.substring(11);
+      emit(
+        ResetPasswordFaliure(
+          errmessage: "Invalid code. Please check and try again.",
+        ),
+      );
+    }
+  }
+
+  Future<void> userResetPassword({required String NewPassword}) async {
+    if (_email == null || _email!.isEmpty) {
+      emit(
+        ResetPasswordFaliure(errmessage: "Email not found, please try again"),
+      );
+      return;
+    }
+
+    if (NewPassword.isEmpty || NewPassword.length < 6) {
+      emit(
+        ResetPasswordFaliure(
+          errmessage: "Password must be at least 6 characters",
+        ),
+      );
+      return;
+    }
+
+    emit(ResetPasswordloading());
+    try {
+      final resetpasswordmodel = await authRepos.ResetPasswordService(
+        Email: _email!,
+        NewPassword: NewPassword,
+      );
+
+      emit(ResetPasswordSucsess(message: resetpasswordmodel.message));
+    } catch (e) {
+      String errorMessage = "Failed to reset password. Please try again.";
+      if (e.toString().contains('404')) {
+        errorMessage = "User not found. Please check your email.";
+      } else if (e.toString().contains('400')) {
+        errorMessage = "Invalid request. Please try again.";
+      } else if (e.toString().contains('500')) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (e.toString().contains('network') ||
+          e.toString().contains('connection')) {
+        errorMessage = "Network error. Please check your connection.";
       }
 
       emit(ResetPasswordFaliure(errmessage: errorMessage));

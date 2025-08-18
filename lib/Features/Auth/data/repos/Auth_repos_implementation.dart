@@ -4,6 +4,7 @@ import 'package:solo/Features/Auth/data/Models/Forget_Password_Model/ForgetPassw
 import 'package:solo/Features/Auth/data/Models/Login_Models/LoginModel.dart';
 import 'package:solo/Features/Auth/data/Models/OTP_Model/OTP_Model.dart';
 import 'package:solo/Features/Auth/data/Models/Register_Model/Register_Model.dart';
+import 'package:solo/Features/Auth/data/Models/Reset_Password_Model/Reset_Password_Model.dart';
 import 'package:solo/Features/Auth/data/repos/Auth_repos.dart';
 
 class AuthReposImpl implements AuthRepos {
@@ -28,7 +29,6 @@ class AuthReposImpl implements AuthRepos {
           "Password": Password,
         },
       );
-
       final registerModel = RegisterModel.fromJson(response);
       return registerModel;
     } on DioException catch (e) {
@@ -91,10 +91,31 @@ class AuthReposImpl implements AuthRepos {
       final otpmodel = OTPModel.fromjson(response);
       return otpmodel;
     } on DioException catch (e) {
-      final serverMessage = e.response?.data?['message'] ?? 'حدث خطأ';
-      throw Exception(serverMessage);
+      final servermessage = e.response?.data?['message'] ?? 'حدث خطأ';
+      throw Exception(servermessage);
     } catch (e) {
       throw Exception('حدث خطأ غير متوقع');
     }
   }
-}
+
+  @override
+  Future<ResetPasswordModel> ResetPasswordService({
+    required String Email,
+    required String NewPassword,
+  }) async {
+    try {
+      final response = await apiservice.post(
+        endpoint: 'api/Account/ResetPassword',
+        data: {'Email': Email, 'NewPassword': NewPassword},
+      );
+
+      final resetPasswordmodel = ResetPasswordModel.fromjson(response);
+      return resetPasswordmodel;
+    } on DioException catch (e) {
+      final servermessage = e.response?.data?['message']?.toString() ??
+          'حدث خطأ';
+      throw Exception(servermessage);
+    } catch (e) {
+      throw Exception('حدث خطأ غير متوقع');
+    }
+  }}

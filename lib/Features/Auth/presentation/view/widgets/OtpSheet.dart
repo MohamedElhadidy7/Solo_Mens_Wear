@@ -47,9 +47,12 @@ class _OtpSheetState extends State<OtpSheet> {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             builder: (_) {
-              return BlocProvider.value(
-                value: context.read<ResetPasswordCubit>(),
-                child: const ResetPassword(),
+              // إنشاء cubit جديد بدلاً من استخدام BlocProvider.value
+              return BlocProvider(
+                create: (_) => ResetPasswordCubit(
+                  AuthReposImpl(apiservice: Apiservice(Dio())),
+                ),
+                child: ResetPassword(email: widget.email),
               );
             },
           );
