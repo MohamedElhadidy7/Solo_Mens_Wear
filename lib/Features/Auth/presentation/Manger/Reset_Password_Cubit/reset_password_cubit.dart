@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 import 'package:solo/Features/Auth/data/Models/Forget_Password_Model/ForgetPassword_Model.dart';
 import 'package:solo/Features/Auth/data/repos/Auth_repos.dart';
@@ -7,12 +8,9 @@ part 'reset_password_state.dart';
 
 class ResetPasswordCubit extends Cubit<ResetPasswordState> {
   ResetPasswordCubit(this.authRepos) : super(ResetPasswordInitial());
-
   final AuthRepos authRepos;
-
   String? _email;
   String? get email => _email;
-
   void setEmail(String email) {
     _email = email;
   }
@@ -29,10 +27,31 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         email: _email!,
       );
       emit(ResetPasswordSucsess(message: forgetpasswordmodel.message));
+    } on DioException catch (dioError) {
+      String errorMessage =
+          "Failed to send verification code. Please try again.";
+
+      if (dioError.response != null) {
+        final statusCode = dioError.response?.statusCode;
+
+        if (statusCode == 400) {
+          errorMessage = "Invalid email address. Please try again.";
+        } else if (statusCode == 404) {
+          errorMessage = "User not found. Please check your email.";
+        } else if (statusCode == 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+      } else if (dioError.type == DioExceptionType.connectionTimeout ||
+          dioError.type == DioExceptionType.receiveTimeout ||
+          dioError.type == DioExceptionType.connectionError) {
+        errorMessage = "Network error. Please check your connection.";
+      }
+
+      emit(ResetPasswordFaliure(errmessage: errorMessage));
     } catch (e) {
       emit(
         ResetPasswordFaliure(
-          errmessage: "Failed to send verification code. Please try again.",
+          errmessage: "Unexpected error occurred. Please try again.",
         ),
       );
     }

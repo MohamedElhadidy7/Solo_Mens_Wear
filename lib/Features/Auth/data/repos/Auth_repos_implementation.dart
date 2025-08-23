@@ -5,6 +5,7 @@ import 'package:solo/Features/Auth/data/Models/Login_Models/LoginModel.dart';
 import 'package:solo/Features/Auth/data/Models/OTP_Model/OTP_Model.dart';
 import 'package:solo/Features/Auth/data/Models/Register_Model/Register_Model.dart';
 import 'package:solo/Features/Auth/data/Models/Reset_Password_Model/Reset_Password_Model.dart';
+
 import 'package:solo/Features/Auth/data/repos/Auth_repos.dart';
 
 class AuthReposImpl implements AuthRepos {
@@ -112,10 +113,66 @@ class AuthReposImpl implements AuthRepos {
       final resetPasswordmodel = ResetPasswordModel.fromjson(response);
       return resetPasswordmodel;
     } on DioException catch (e) {
-      final servermessage = e.response?.data?['message']?.toString() ??
-          'حدث خطأ';
+      final servermessage =
+          e.response?.data?['message']?.toString() ?? 'حدث خطأ';
       throw Exception(servermessage);
     } catch (e) {
       throw Exception('حدث خطأ غير متوقع');
     }
-  }}
+  }
+
+  @override
+  Future<LoginModel> LoginWithGoogleService({
+    required String providerKey,
+    required String email,
+    required String name,
+  }) async {
+    try {
+      final response = await apiservice.post(
+        endpoint: 'api/SocialAuth/ExternalLogin',
+        data: {
+          'provider': 'google',
+          'providerKey': providerKey,
+          'email': email,
+          'name': name,
+        },
+        asJson: true,
+      );
+
+      return LoginModel.fromJson(response);
+    } on DioException catch (e) {
+      final serverMessage =
+          e.response?.data?['message'].toString() ?? 'حدث خطأ';
+      throw Exception(serverMessage);
+    } catch (e) {
+      throw Exception('حدث خطأ غير متوقع');
+    }
+  }
+
+  @override
+  Future<LoginModel> LoginWithFacebookService({
+    required String providerKey,
+    required String email,
+    required String name,
+  }) async {
+    try {
+      final response = await apiservice.post(
+        endpoint: 'api/SocialAuth/ExternalLogin',
+        data: {
+          'provider': 'facebook',
+          'providerKey': providerKey,
+          'email': email,
+          'name': name,
+        },
+      );
+
+      return LoginModel.fromJson(response);
+    } on DioException catch (e) {
+      final serverMessage =
+          e.response?.data?['message'].toString() ?? 'حدث خطأ';
+      throw Exception(serverMessage);
+    } catch (e) {
+      throw Exception('حدث خطأ غير متوقع');
+    }
+  }
+}

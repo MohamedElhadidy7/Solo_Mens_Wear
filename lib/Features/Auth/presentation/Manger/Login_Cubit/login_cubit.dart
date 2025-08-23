@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
         Email: Email,
         Password: Password,
       );
-      final accessToken = loginmodel.response['accessToken']?['Token'];
+      final accessToken = loginmodel.response['accessToken']?['token'];
       final refreshToken = loginmodel.response['refreshToken']?['token'];
 
       if (accessToken != null && refreshToken != null) {

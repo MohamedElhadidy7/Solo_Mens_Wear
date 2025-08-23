@@ -28,6 +28,8 @@ class _LoginsectionState extends State<Loginsection> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   bool obscureText = true;
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginCubit, LoginState>(
@@ -44,10 +46,10 @@ class _LoginsectionState extends State<Loginsection> {
           print(state.errorMessage);
         }
       },
-
       builder: (context, state) {
         return Form(
           key: _formKey,
+          autovalidateMode: _autovalidateMode,
           child: Column(
             children: [
               CustomTextformfield(
@@ -55,6 +57,14 @@ class _LoginsectionState extends State<Loginsection> {
                 hint: 'Example11@gmail.com',
                 suffixIcon: Icon(Icons.email),
                 controller: emailcontroller,
+                onChanged: (value) {
+                  // تفعيل الـ auto validation بعد المحاولة الأولى
+                  if (_autovalidateMode == AutovalidateMode.disabled) {
+                    setState(() {
+                      _autovalidateMode = AutovalidateMode.onUserInteraction;
+                    });
+                  }
+                },
               ),
               const SizedBox(height: 20),
               CustomTextformfield(
@@ -72,6 +82,14 @@ class _LoginsectionState extends State<Loginsection> {
                 ),
                 obscureText: obscureText,
                 controller: passwordcontroller,
+                onChanged: (value) {
+                  // تفعيل الـ auto validation بعد المحاولة الأولى
+                  if (_autovalidateMode == AutovalidateMode.disabled) {
+                    setState(() {
+                      _autovalidateMode = AutovalidateMode.onUserInteraction;
+                    });
+                  }
+                },
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -90,7 +108,6 @@ class _LoginsectionState extends State<Loginsection> {
                       },
                     );
                   },
-
                   child: Text(
                     'Forget Password?',
                     style: AppStyles.textstyle14.copyWith(color: primarycolor),
@@ -101,6 +118,13 @@ class _LoginsectionState extends State<Loginsection> {
               CustomButton(
                 textbutton: 'Log in',
                 onPressed: () {
+                  // تفعيل الـ auto validation عند الضغط على الزر
+                  if (_autovalidateMode == AutovalidateMode.disabled) {
+                    setState(() {
+                      _autovalidateMode = AutovalidateMode.always;
+                    });
+                  }
+
                   if (_formKey.currentState!.validate()) {
                     final Email = emailcontroller.text;
                     final Password = passwordcontroller.text;
@@ -110,7 +134,6 @@ class _LoginsectionState extends State<Loginsection> {
                   }
                 },
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -10,6 +10,7 @@ class CustomTextformfield extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.validator,
+    this.onChanged,
   });
   final String hint;
   final Widget? suffixIcon;
@@ -17,9 +18,11 @@ class CustomTextformfield extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged,
       validator: validator,
       keyboardType: keyboardType,
       controller: controller,

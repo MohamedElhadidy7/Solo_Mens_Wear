@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:solo/Constants.dart';
 import 'package:solo/Core/Utils/App_Styles.dart';
@@ -18,33 +19,40 @@ class RegisterSection extends StatefulWidget {
 
 class _RegisterSectionState extends State<RegisterSection> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   bool obscureText = true;
+  bool hasTriedSubmit = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterState>(
       listener: (context, state) {
         if (state is Registerloading) {
-          Center(child: CircularProgressIndicator());
+          EasyLoading.show(status: 'Registering...');
         } else if (state is Registersucsess) {
+          EasyLoading.dismiss();
+
           AwesomeDialog(
             titleTextStyle: AppStyles.textstyle20,
-            descTextStyle: AppStyles.textstyle14.copyWith(color: Colors.grey),
+            descTextStyle:
+            AppStyles.textstyle14.copyWith(color: Colors.grey),
             context: context,
             dialogType: DialogType.success,
             animType: AnimType.rightSlide,
-            title: 'Registered Sucsessfully',
+            title: 'Registered Successfully',
             desc: 'Please check your Email to verify your account!',
             btnOkOnPress: () {
-              GoRouter.of(context).pop();
+              GoRouter.of(context).pop(); // يوديه للوجين
             },
           ).show();
         } else if (state is RegisterFaliure) {
+          EasyLoading.dismiss();
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage),
@@ -56,12 +64,18 @@ class _RegisterSectionState extends State<RegisterSection> {
       builder: (context, state) {
         return Form(
           key: _formKey,
+          autovalidateMode: hasTriedSubmit
+              ? AutovalidateMode.onUserInteraction
+              : AutovalidateMode.disabled,
           child: Column(
             children: [
               CustomTextformfield(
                 hint: 'Name',
                 controller: nameController,
                 validator: ValidationHelper.validateName,
+                onChanged: (value) {
+                  if (hasTriedSubmit) setState(() {});
+                },
               ),
               const SizedBox(height: 20),
               CustomTextformfield(
@@ -69,12 +83,18 @@ class _RegisterSectionState extends State<RegisterSection> {
                 keyboardType: TextInputType.number,
                 controller: phoneController,
                 validator: ValidationHelper.validatePhone,
+                onChanged: (value) {
+                  if (hasTriedSubmit) setState(() {});
+                },
               ),
               const SizedBox(height: 20),
               CustomTextformfield(
                 hint: 'Email',
                 controller: emailController,
                 validator: ValidationHelper.validateEmail,
+                onChanged: (value) {
+                  if (hasTriedSubmit) setState(() {});
+                },
               ),
               const SizedBox(height: 20),
               CustomTextformfield(
@@ -82,6 +102,9 @@ class _RegisterSectionState extends State<RegisterSection> {
                 controller: passwordController,
                 validator: ValidationHelper.validatePassword,
                 obscureText: obscureText,
+                onChanged: (value) {
+                  if (hasTriedSubmit) setState(() {});
+                },
                 suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {
@@ -97,11 +120,15 @@ class _RegisterSectionState extends State<RegisterSection> {
               CustomButton(
                 textbutton: 'Sign Up',
                 onPressed: () {
+                  setState(() {
+                    hasTriedSubmit = true;
+                  });
                   if (_formKey.currentState!.validate()) {
                     final name = nameController.text;
                     final phone = phoneController.text;
                     final email = emailController.text;
                     final password = passwordController.text;
+
                     BlocProvider.of<RegisterCubit>(context).userRegister(
                       name: name,
                       phoneNumber: phone,

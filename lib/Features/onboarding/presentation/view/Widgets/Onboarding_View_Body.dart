@@ -96,7 +96,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                 right: 16.w,
                 child: TextButton(
                   onPressed: () {
-                    GoRouter.of(context).push('/login');
+                    GoRouter.of(context).go('/login');
                   },
                   child: Text(
                     'Skip',
@@ -113,7 +113,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     right: 16.w,
                     child: TextButton(
                       onPressed: () {
-                        GoRouter.of(context).push('/login');
+                        GoRouter.of(context).go('/login');
                       },
                       child: Text(
                         'Get Statrted',

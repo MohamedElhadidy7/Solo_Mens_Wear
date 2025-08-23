@@ -9,6 +9,7 @@ import 'package:solo/Core/Widgets/Custom_Button.dart';
 import 'package:solo/Core/Widgets/Custom_TextFormField.dart';
 import 'package:solo/Features/Auth/data/repos/Auth_repos_implementation.dart';
 import 'package:solo/Features/Auth/presentation/Manger/Reset_Password_Cubit/reset_password_cubit.dart';
+import 'package:solo/Features/Auth/presentation/view/widgets/Validation_Helper.dart';
 import 'OtpSheet.dart';
 
 class ForgetPasswordSheet extends StatefulWidget {
@@ -20,6 +21,7 @@ class ForgetPasswordSheet extends StatefulWidget {
 
 class _ForgetPasswordSheetState extends State<ForgetPasswordSheet> {
   TextEditingController forgetpasswordcontroller = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // ✅ Form key
 
   @override
   void dispose() {
@@ -37,66 +39,72 @@ class _ForgetPasswordSheetState extends State<ForgetPasswordSheet> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
       ),
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text('Forget Password', style: AppStyles.textstyle28),
-            ),
-            Text(
-              'Enter your email for the verification process, we will send 4 digits code to your email',
-              style: AppStyles.textstyle14.copyWith(
-                color: const Color(0xff7A7A7B),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text('Forget Password', style: AppStyles.textstyle28),
               ),
-            ),
-            SizedBox(height: 16.h),
-            CustomTextformfield(
-              hint: 'Enter your Email',
-              controller: forgetpasswordcontroller,
-            ),
-            SizedBox(height: 30.h),
+              Text(
+                'Enter your email for the verification process, we will send 4 digits code to your email',
+                style: AppStyles.textstyle14.copyWith(
+                  color: const Color(0xff7A7A7B),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              CustomTextformfield(
+                hint: 'Enter your Email',
+                controller: forgetpasswordcontroller,
+                validator: ValidationHelper.validateEmail,
+              ),
+              SizedBox(height: 30.h),
 
-            BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
-              listener: (context, state) {
-                if (state is ResetPasswordloading) {
-                  EasyLoading.show(status: 'Wait..');
-                } else if (state is ResetPasswordSucsess) {
-                  EasyLoading.dismiss();
-                  Navigator.pop(context);
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (_) {
-                      return BlocProvider(
-                        create: (_) => ResetPasswordCubit(
-                          AuthReposImpl(apiservice: Apiservice(Dio())),
+              BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
+                listener: (context, state) {
+                  if (state is ResetPasswordloading) {
+                    EasyLoading.show(status: 'Wait..');
+                  } else if (state is ResetPasswordSucsess) {
+                    EasyLoading.dismiss();
+                    Navigator.pop(context);
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
                         ),
-                        child: OtpSheet(email: forgetpasswordcontroller.text),
-                      );
+                      ),
+                      builder: (_) {
+                        return BlocProvider(
+                          create: (_) => ResetPasswordCubit(
+                            AuthReposImpl(apiservice: Apiservice(Dio())),
+                          ),
+                          child: OtpSheet(email: forgetpasswordcontroller.text),
+                        );
+                      },
+                    );
+                  } else if (state is ResetPasswordFaliure) {
+                    EasyLoading.showError(state.errmessage);
+                  }
+                },
+                builder: (context, state) {
+                  return CustomButton(
+                    textbutton: 'Continue',
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        final cubit = context.read<ResetPasswordCubit>();
+                        cubit.setEmail(forgetpasswordcontroller.text.trim());
+                        cubit.userForgetPassword();
+                      }
                     },
                   );
-                } else if (state is ResetPasswordFaliure) {
-                  EasyLoading.showError(state.errmessage);
-                }
-              },
-              builder: (context, state) {
-                return CustomButton(
-                  textbutton: 'Continue',
-                  onPressed: () {
-                    final cubit = context.read<ResetPasswordCubit>();
-                    cubit.setEmail(forgetpasswordcontroller.text);
-                    cubit.userForgetPassword();
-                  },
-                );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

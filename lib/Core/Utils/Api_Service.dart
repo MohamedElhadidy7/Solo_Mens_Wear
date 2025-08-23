@@ -17,14 +17,25 @@ class Apiservice {
     required String endpoint,
     Map<String, dynamic>? data,
     Map<String, dynamic>? queryParameters,
+    bool asJson = false,
   }) async {
-    FormData formData = FormData.fromMap(data ?? {});
+    dynamic body;
+    Options? options;
+
+    if (asJson) {
+      body = data;
+      options = Options(headers: {'Content-Type': 'application/json'});
+    } else {
+      body = FormData.fromMap(data ?? {});
+    }
 
     final response = await _dio.post(
       '$_baseUrl$endpoint',
-      data: formData,
+      data: body,
       queryParameters: queryParameters,
+      options: options,
     );
+
     return response.data;
   }
 }
