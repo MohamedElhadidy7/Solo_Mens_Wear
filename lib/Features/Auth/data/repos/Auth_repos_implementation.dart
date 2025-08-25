@@ -164,6 +164,7 @@ class AuthReposImpl implements AuthRepos {
           'email': email,
           'name': name,
         },
+        asJson: true,
       );
 
       return LoginModel.fromJson(response);

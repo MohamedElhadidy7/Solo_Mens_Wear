@@ -46,36 +46,57 @@ class ExternalLoginCubit extends Cubit<ExternalLoginState> {
       emit(ExternalLoginFaliure(errorMessage: errorMessage));
     }
   }
-
   Future<void> loginWithFacebook({
     required String providerKey,
     required String email,
     required String name,
   }) async {
+
+
     emit(ExternalLoginLoading());
+
+
     try {
+
+
       final loginModel = await authRepos.LoginWithFacebookService(
         providerKey: providerKey,
         email: email,
         name: name,
       );
 
+
+
       if (loginModel.isSuccess) {
+
+
         final accessToken = loginModel.response['accessToken']?['token'];
         final refreshToken = loginModel.response['refreshToken']?['token'];
 
+
+
         if (accessToken != null && refreshToken != null) {
+
           await _tokenStorage.saveTokens(accessToken, refreshToken);
+
+
           emit(ExternalLoginSucsess(loginModel.message));
+
         } else {
-          emit(ExternalLoginFaliure(errorMessage: "فشلت عمليه التسجيل"));
+
+          emit(ExternalLoginFaliure(errorMessage: "فشلت عمليه التسجيل - لا توجد رموز مميزة"));
         }
       } else {
+
         emit(ExternalLoginFaliure(errorMessage: loginModel.message));
       }
     } catch (e) {
-      String errorMessage = e.toString();
 
+
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.substring(11);
+      }
       emit(ExternalLoginFaliure(errorMessage: errorMessage));
     }
   }

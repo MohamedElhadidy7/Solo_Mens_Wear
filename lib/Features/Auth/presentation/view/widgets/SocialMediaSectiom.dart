@@ -45,31 +45,47 @@ class _SocialmediasectionState extends State<Socialmediasection> {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      final result = await FacebookAuth.instance.login();
+
+      await FacebookAuth.instance.logOut();
+
+
+      final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
+
+
 
       if (result.status == LoginStatus.success) {
-        final userData = await FacebookAuth.instance.getUserData();
-        final email = userData['email'] ?? '';
-        final name = userData['name'] ?? '';
-        final providerKey = userData['id'] ?? '';
 
-        if (email.isNotEmpty && providerKey.isNotEmpty) {
+
+        final userData = await FacebookAuth.instance.getUserData(
+          fields: "name,email,id,picture.width(200)",
+        );
+
+
+
+        final email = userData['email']?.toString();
+        final name = userData['name']?.toString();
+        final providerKey = userData['id']?.toString();
+
+
+
+        if (providerKey != null && providerKey.isNotEmpty) {
+
+
           await context.read<ExternalLoginCubit>().loginWithFacebook(
             providerKey: providerKey,
-            email: email,
-            name: name,
+            email: email ?? 'no-email@facebook.com',
+            name: name ?? 'Facebook User',
           );
         } else {
-          throw Exception("بيانات فيسبوك غير مكتملة");
+
+          throw Exception("لم يتم الحصول على معرف المستخدم من فيسبوك");
         }
-      } else if (result.status == LoginStatus.cancelled) {
-        EasyLoading.showInfo("تم إلغاء تسجيل الدخول");
-      } else {
-        throw Exception("فشل تسجيل الدخول بفيسبوك");
       }
     } catch (e) {
-      debugPrint("Facebook sign in error: $e");
-      EasyLoading.showError("خطأ في تسجيل الدخول بفيسبوك: ${e.toString()}");
+
+      EasyLoading.showError("خطأ في تسجيل الدخول بفيسبوك: $e");
     }
   }
 

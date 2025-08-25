@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:solo/Core/Utils/Api_Service.dart';
 import 'package:solo/Core/Utils/App_Router.dart';
@@ -10,7 +11,7 @@ import 'package:solo/Features/Auth/data/repos/Auth_repos_implementation.dart';
 import 'package:solo/Features/Auth/presentation/Manger/External_Login_Cubit/external_login_cubit.dart';
 import 'package:solo/Features/Auth/presentation/Manger/Reset_Password_Cubit/reset_password_cubit.dart';
 
-void main() {
+void main() async {
   Animate.restartOnHotReload = true;
   WidgetsFlutterBinding.ensureInitialized();
 
