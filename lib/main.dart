@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:solo/Core/Utils/Api_Service.dart';
 import 'package:solo/Core/Utils/App_Router.dart';
