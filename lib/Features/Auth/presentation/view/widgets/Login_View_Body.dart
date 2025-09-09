@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:solo/Constants.dart';
 import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/Loginsection.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/SocialMediaSectiom.dart';
@@ -20,7 +21,12 @@ class _LoginViewBodyState extends State<LoginViewBody> {
         child: Column(
           children: [
             SizedBox(height: 160.h),
-            Center(child: Text('Welcome Back!', style: AppStyles.textstyle28)),
+            Center(
+              child: Text(
+                'Welcome Back!',
+                style: AppStyles.textstyle28.copyWith(color: primarycolor),
+              ),
+            ),
             const SizedBox(height: 30),
             Socialmediasection(),
             const SizedBox(height: 20),

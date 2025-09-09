@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Core/Widgets/Custom_Button.dart';
 import 'package:solo/Core/Widgets/Custom_TextFormField.dart';
@@ -145,7 +145,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                         EasyLoading.showError(
                           'Something went wrong. Please try again.',
                         );
-                        print('Error in reset password: $e');
                       }
                     },
                   ),

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
-import 'package:solo/Features/Auth/data/Models/Forget_Password_Model/ForgetPassword_Model.dart';
+
 import 'package:solo/Features/Auth/data/repos/Auth_repos.dart';
 
 part 'reset_password_state.dart';

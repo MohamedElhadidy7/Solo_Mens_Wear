@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:solo/Constants.dart';
 import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/SocialMediaSectiom.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/register_Section.dart';
@@ -16,7 +17,10 @@ class RegisterViewBody extends StatelessWidget {
           children: [
             SizedBox(height: 160.h),
             Center(
-              child: Text('Join us to start', style: AppStyles.textstyle28),
+              child: Text(
+                'Join us to start',
+                style: AppStyles.textstyle28.copyWith(color: primarycolor),
+              ),
             ),
             const SizedBox(height: 30),
             Socialmediasection(),
@@ -26,6 +30,5 @@ class RegisterViewBody extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

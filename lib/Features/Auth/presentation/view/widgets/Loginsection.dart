@@ -1,18 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:solo/Constants.dart';
-import 'package:solo/Core/Utils/Api_Service.dart';
-import 'package:solo/Core/Utils/App_Router.dart';
+
 import 'package:solo/Core/Utils/App_Styles.dart';
 import 'package:solo/Core/Widgets/Custom_Button.dart';
 import 'package:solo/Core/Widgets/Custom_TextFormField.dart';
-import 'package:solo/Features/Auth/data/repos/Auth_repos_implementation.dart';
+
 import 'package:solo/Features/Auth/presentation/Manger/Login_Cubit/login_cubit.dart';
-import 'package:solo/Features/Auth/presentation/Manger/Reset_Password_Cubit/reset_password_cubit.dart';
+
 import 'package:solo/Features/Auth/presentation/view/widgets/ForgetPasswprdSheet.dart';
 import 'package:solo/Features/Auth/presentation/view/widgets/Validation_Helper.dart';
 
@@ -28,7 +26,9 @@ class _LoginsectionState extends State<Loginsection> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   bool obscureText = true;
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
+  bool validateEmail = false;
+  bool validatePassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,8 @@ class _LoginsectionState extends State<Loginsection> {
         if (state is Loginloading) {
           EasyLoading.show(status: 'Logging in...');
         } else if (state is Loginsucsess) {
-          EasyLoading.showSuccess('Success!');
           Future.delayed(Duration(milliseconds: 600), () {
+            EasyLoading.dismiss();
             GoRouter.of(context).go('/Home');
           });
         } else if (state is LoginFaliure) {
@@ -49,26 +49,31 @@ class _LoginsectionState extends State<Loginsection> {
       builder: (context, state) {
         return Form(
           key: _formKey,
-          autovalidateMode: _autovalidateMode,
+          autovalidateMode: AutovalidateMode.disabled,
           child: Column(
             children: [
               CustomTextformfield(
-                validator: ValidationHelper.validateEmail,
+                validator: validateEmail
+                    ? ValidationHelper.validateEmail
+                    : null,
                 hint: 'Example11@gmail.com',
                 suffixIcon: Icon(Icons.email),
                 controller: emailcontroller,
                 onChanged: (value) {
-                  // تفعيل الـ auto validation بعد المحاولة الأولى
-                  if (_autovalidateMode == AutovalidateMode.disabled) {
+                  if (!validateEmail) {
                     setState(() {
-                      _autovalidateMode = AutovalidateMode.onUserInteraction;
+                      validateEmail = true;
                     });
                   }
+
+                  _formKey.currentState?.validate();
                 },
               ),
               const SizedBox(height: 20),
               CustomTextformfield(
-                validator: ValidationHelper.validatePassword,
+                validator: validatePassword
+                    ? ValidationHelper.validatePassword
+                    : null,
                 hint: 'Password',
                 suffixIcon: IconButton(
                   onPressed: () {
@@ -83,12 +88,13 @@ class _LoginsectionState extends State<Loginsection> {
                 obscureText: obscureText,
                 controller: passwordcontroller,
                 onChanged: (value) {
-                  // تفعيل الـ auto validation بعد المحاولة الأولى
-                  if (_autovalidateMode == AutovalidateMode.disabled) {
+                  if (!validatePassword) {
                     setState(() {
-                      _autovalidateMode = AutovalidateMode.onUserInteraction;
+                      validatePassword = true;
                     });
                   }
+
+                  _formKey.currentState?.validate();
                 },
               ),
               Align(
@@ -118,12 +124,10 @@ class _LoginsectionState extends State<Loginsection> {
               CustomButton(
                 textbutton: 'Log in',
                 onPressed: () {
-                  // تفعيل الـ auto validation عند الضغط على الزر
-                  if (_autovalidateMode == AutovalidateMode.disabled) {
-                    setState(() {
-                      _autovalidateMode = AutovalidateMode.always;
-                    });
-                  }
+                  setState(() {
+                    validateEmail = true;
+                    validatePassword = true;
+                  });
 
                   if (_formKey.currentState!.validate()) {
                     final Email = emailcontroller.text;

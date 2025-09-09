@@ -14,43 +14,66 @@ class SplashViewBody extends StatefulWidget {
 class _SplashViewBodyState extends State<SplashViewBody>
     with TickerProviderStateMixin {
   late AnimationController _logoController;
-  late AnimationController _text1Controller;
-  late AnimationController _text2Controller;
+  late AnimationController _logoMoveController;
+  late Animation<double> _logoScaleAnimation;
+  late Animation<double> _logoOpacityAnimation;
+  late Animation<Offset> _logoMoveAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // شعار الانميشن
+    // Animation للوجو يطلع من جوا الشاشة (أطول وأنعم)
     _logoController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 2500),
     );
 
-    _text1Controller = AnimationController(
+    // Animation للوجو يتحرك بعد فترة (أنعم)
+    _logoMoveController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 1200),
     );
 
-    _text2Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
+    // تأثير Scale للوجو مع curve أنعم
+    _logoScaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _logoController,
+        curve: Curves.easeOutBack, // curve أنعم من elasticOut
+      ),
     );
 
-    // التوقيت
-    Future.delayed(const Duration(milliseconds: 300), () {
+    // تأثير opacity منفصل للتحكم الأفضل
+    _logoOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _logoController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+      ),
+    );
+
+    // تأثير الحركة أنعم وأقل حدة
+    _logoMoveAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0, -1.5), // حركة أقل
+    ).animate(
+      CurvedAnimation(
+        parent: _logoMoveController,
+        curve: Curves.easeInOutCubic, // curve أنعم
+      ),
+    );
+
+    // تشغيل animation الوجو مع تأخير أقل
+    Future.delayed(const Duration(milliseconds: 200), () {
       _logoController.forward();
     });
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      _text1Controller.forward();
+    // تشغيل animation الحركة بعد وقت أطول للاستمتاع بالوجو
+    Future.delayed(const Duration(milliseconds: 6000), () {
+      _logoMoveController.forward();
     });
 
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      _text2Controller.forward();
-    });
-
-    Future.delayed(const Duration(milliseconds: 7000), () async {
+    // الانتقال للصفحة التالية
+    Future.delayed(const Duration(milliseconds: 7500), () async {
       await WidgetsBinding.instance.endOfFrame;
       if (mounted) {
         GoRouter.of(context).push('/onboarding');
@@ -61,77 +84,49 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   void dispose() {
     _logoController.dispose();
-    _text1Controller.dispose();
-    _text2Controller.dispose();
+    _logoMoveController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FadeTransition(
-            opacity: _logoController,
-            child: SlideTransition(
-              position:
-                  Tween<Offset>(
-                    begin: const Offset(0, -1.5),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: _logoController,
-                      curve: Curves.easeOut,
+      child: AnimatedBuilder(
+        animation: Listenable.merge([_logoController, _logoMoveController]),
+        builder: (context, child) {
+          return SlideTransition(
+            position: _logoMoveAnimation,
+            child: FadeTransition(
+              opacity: Tween<double>(begin: 1.0, end: 0.0).animate(
+                CurvedAnimation(
+                  parent: _logoMoveController,
+                  curve: Curves.easeInCubic, // fade out أنعم
+                ),
+              ),
+              child: FadeTransition(
+                opacity: _logoOpacityAnimation, // fade in منفصل
+                child: ScaleTransition(
+                  scale: _logoScaleAnimation,
+                  child: Container(
+                    height: 300.h,
+                    width: 300.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                     
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        AssetsData.logo1,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-              child: SizedBox(
-                height: 200,
-                width: 250.w,
-                child: Image.asset(AssetsData.logo, fit: BoxFit.cover),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FadeTransition(
-                opacity: _text1Controller,
-                child: SlideTransition(
-                  position:
-                      Tween<Offset>(
-                        begin: const Offset(-1, 0),
-                        end: Offset.zero,
-                      ).animate(
-                        CurvedAnimation(
-                          parent: _text1Controller,
-                          curve: Curves.easeOut,
-                        ),
-                      ),
-                  child: Text('Go Solo,', style: AppStyles.textstyle30),
-                ),
-              ),
-              const SizedBox(width: 5),
-              FadeTransition(
-                opacity: _text2Controller,
-                child: SlideTransition(
-                  position:
-                      Tween<Offset>(
-                        begin: const Offset(1, 0),
-                        end: Offset.zero,
-                      ).animate(
-                        CurvedAnimation(
-                          parent: _text2Controller,
-                          curve: Curves.easeOut,
-                        ),
-                      ),
-                  child: Text('Go Far...', style: AppStyles.textstyle30),
-                ),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
