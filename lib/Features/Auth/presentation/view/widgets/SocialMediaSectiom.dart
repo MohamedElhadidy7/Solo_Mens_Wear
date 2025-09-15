@@ -96,7 +96,7 @@ class _SocialmediasectionState extends State<Socialmediasection> {
         if (state is ExternalLoginLoading) {
           EasyLoading.show(status: 'Wait..');
         } else if (state is ExternalLoginSucsess) {
-          EasyLoading.showSuccess('Login Successfully');
+
           GoRouter.of(context).go('/Home');
         } else if (state is ExternalLoginFaliure) {
           EasyLoading.showError(

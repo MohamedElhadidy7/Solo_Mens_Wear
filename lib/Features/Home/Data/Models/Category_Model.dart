@@ -7,7 +7,7 @@ class CategoryModel {
 }
 
 final List<CategoryModel> categoryList = [
-  CategoryModel(image: AssetsData.Tshirt, title: 'T-shirt'),
+  CategoryModel(image: AssetsData.tshirt, title: 'T-shirt'),
   CategoryModel(image: AssetsData.pants, title: 'Pants'),
   CategoryModel(image: AssetsData.jacket, title: 'Jacket'),
   CategoryModel(image: AssetsData.shorts, title: 'Shorts'),

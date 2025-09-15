@@ -5,9 +5,10 @@ class AssetsData {
   static const google = 'assets/images/google.png';
   static const facebook = 'assets/images/facebook.png';
   static const logo1 = 'assets/images/logo1.png';
-  static const Tshirt = 'assets/images/Tshirt logo.png';
+  static const tshirt = 'assets/images/Tshirtlogo.png';
   static const pants = 'assets/images/pants.png';
   static const jacket = 'assets/images/Jacket.png';
   static const shorts = 'assets/images/shorts.png';
   static const shoes = 'assets/images/shoes.png';
+  static const outfit = 'assets/images/outfit.png';
 }
